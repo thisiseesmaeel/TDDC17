@@ -1,0 +1,6 @@
+INDEX VERSION 1.131+/home/hadan326/TDDC17/lab1/lab1_workspace/.metadata/.plugins/org.eclipse.jdt.core
+1865797976.index
+4155219971.index
+2917382390.index
+2949097923.index
+1080065135.index
