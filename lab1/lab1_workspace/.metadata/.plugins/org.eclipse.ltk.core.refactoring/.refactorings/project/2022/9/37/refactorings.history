@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename compilation unit &apos;tddc17.BFS.java&apos; to &apos;ShortestPath.java&apos;&#x0A;- Original project: &apos;project&apos;&#x0A;- Original element: &apos;tddc17.BFS.java&apos;&#x0A;- Renamed element: &apos;tddc17.ShortestPath.java&apos;" description="Rename compilation unit &apos;BFS.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/&lt;tddc17{BFS.java" name="ShortestPath.java" references="false" stamp="1662455837263" version="1.0"/>
+</session>

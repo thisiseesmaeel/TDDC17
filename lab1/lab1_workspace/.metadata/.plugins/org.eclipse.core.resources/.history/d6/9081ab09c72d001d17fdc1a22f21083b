@@ -1,0 +1,107 @@
+package tddc17;
+
+import java.util.*;
+
+//Class representing graph nodes
+class Node{
+  ArrayList<Integer> name;
+  List<Node> neighbors;
+  boolean visited = false;
+  Node prev = null;
+
+  Node(ArrayList<Integer> name){
+    this.name = name;
+    this.neighbors = new ArrayList<>();
+  }
+
+  //Method to connect nodes
+  void add_neighbor(Node node){
+    this.neighbors.add(node);
+    node.neighbors.add(this);
+  }
+
+//  //Node representation
+//  public String toString(){
+//	  
+//    return this.name;
+//  }
+}
+
+
+//class implmenting the algorithm
+class ShortestPath{
+  Node start, end;
+
+  ShortestPath(Node start, Node end){
+    this.start = start;
+    this.end = end;
+  }
+
+  public void bfs(){
+    //Create queue
+    Queue<Node> queue = new LinkedList<>();
+
+    //Visit and add start node to the queue
+    start.visited = true;
+    queue.add(start);
+
+    //BFS until queue is empty and not reached to the end node
+    while(!queue.isEmpty()){
+      //pop a node from queue for search operation
+      Node current_node = queue.poll();
+      //Loop through neighbors node to find the 'end'
+      for(Node node: current_node.neighbors){
+        if(!node.visited){
+          //Visit and add the node to the queue
+          node.visited =true;
+          queue.add(node);
+          //update its precedings nodes
+          node.prev = current_node;
+          //If reached the end node then stop BFS
+          if(node==end){
+            queue.clear();
+            break;
+          }
+        }
+      }
+    }
+    trace_route();
+  }
+
+  //Function to trace the route using preceding nodes
+  private void trace_route(){
+    Node node = end;
+    List<Node> route = new ArrayList<>();
+    //Loop until node is null to reach start node
+    //becasue start.prev == null
+    while(node != null){
+      route.add(node);
+      node = node.prev;
+    }
+    //Reverse the route - bring start to the front
+    Collections.reverse(route);
+    //Output the route
+    System.out.println(route);
+  }
+}
+
+//Driver Code
+class Main {
+  public static void main(String[] args) {
+      //create nodes
+      Node node_A = new Node(Arrays.asList(0,0));
+//      Node node_B = new Node("B");
+//      Node node_C = new Node("C");
+//      Node node_D = new Node("D");
+//      Node node_E = new Node("E");
+
+      //connect nodes (i.e. create graph)
+//      node_A.add_neighbor(node_B);
+//      node_B.add_neighbor(node_C);
+//      node_C.add_neighbor(node_D);
+//      node_D.add_neighbor(node_E);
+//      node_B.add_neighbor(node_E);
+//
+//      new ShortestPath(node_A, node_E).bfs();
+  }
+}

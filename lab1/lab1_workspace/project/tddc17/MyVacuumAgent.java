@@ -13,6 +13,9 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import tddc17.ShortestPath;
+import tddc17.Node;
+
 class MyAgentState
 {
 	public int[][] world = new int[30][30];
@@ -324,17 +327,81 @@ class MyAgentProgram implements AgentProgram {
 	    		}
 	    		
 	    		return NoOpAction.NO_OP;
+	    		
 	    	}
 	    }
 	}
 	
 	private Integer findNextMovement(ArrayList<Integer> goal_square) {
 		// Find a path to goal and tell me where to go (up, right, down or left?)
+		// Finding shortest path with help of BFS
+		
+		
+		
+		// Creating a graph representation based on current observation of the world
+		ArrayList<Node> nodes = new ArrayList<>();
+		for (int i=0; i < state.world.length; i++)
+		{
+			for (int j=0; j < state.world[i].length ; j++)
+			{
+				if (state.world[j][i]==state.CLEAR)
+					nodes.add(new Node(Arrays.asList(i,j)));
+			}
+			System.out.println("");
+		}
+		
+		
+		// connecting nodes which are neighbors
+		for(Node outer_node: nodes) {
+			for(Node inner_node: nodes) {
+				if(isNeighbor(outer_node, inner_node)) {
+					outer_node.add_neighbor(inner_node);
+				}
+			}
+		}
+		
+		// finding the goal node in graph
+		Node goal_node = null;
+		for(Node node: nodes) {
+			if(node.getX() == goal_square.get(0) && node.getY() == goal_square.get(1)) {
+				goal_node = node;
+				break;
+			}
+		}
+		
+		Node current_node = null;
+		for(Node node: nodes) {
+			if(node.getX() == state.agent_x_position && node.getY() == state.agent_y_position) {
+				current_node = node;
+				break;
+			}
+		}
+		
+		new ShortestPath(current_node, goal_node).bfs();
 		
 		return MyAgentState.SOUTH;
 		
 	}
+	
+	private boolean isNeighbor(Node node1, Node node2) {
+		if(node1.getX() == node2.getX() + 1 && node1.getY() == node2.getY()) {
+			return true;
+		}
+		else if(node1.getX() == node2.getX() - 1 && node1.getY() == node2.getY()) {
+			return true;
+		}
+		else if(node1.getX() == node2.getX() && node1.getY() == node2.getY() + 1) {
+			return true;
+		}
+		else if(node1.getX() == node2.getX() - 1 && node1.getY() == node2.getY() - 1) {
+			return true;
+		}
+		return false;
+	}
+	
 }
+
+
 
 public class MyVacuumAgent extends AbstractAgent {
     public MyVacuumAgent() {
