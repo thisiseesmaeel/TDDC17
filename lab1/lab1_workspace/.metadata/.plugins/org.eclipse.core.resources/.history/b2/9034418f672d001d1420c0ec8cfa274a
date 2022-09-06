@@ -8,6 +8,10 @@ import aima.core.agent.Percept;
 import aima.core.agent.impl.*;
 
 import java.util.Random;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 class MyAgentState
 {
@@ -95,7 +99,9 @@ class MyAgentState
 }
 
 class MyAgentProgram implements AgentProgram {
-
+	private Queue<ArrayList<Integer>> q = new LinkedList<>();
+	private ArrayList<Integer> next_square = new ArrayList<>(); 
+	
 	private int initnialRandomActions = 10;
 	private Random random_generator = new Random();
 	
@@ -195,15 +201,53 @@ class MyAgentProgram implements AgentProgram {
 	    } 
 	    else
 	    {
-	    	if (bump)
-	    	{
+	    	if(home) {
 	    		state.agent_last_action=state.ACTION_NONE;
 		    	return NoOpAction.NO_OP;
 	    	}
+	    	else if (bump)
+	    	{
+	    		state.agent_last_action=state.ACTION_TURN_RIGHT;
+		    	return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+	    	}
 	    	else
 	    	{
-	    		state.agent_last_action=state.ACTION_MOVE_FORWARD;
-	    		return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+//	    		state.agent_last_action=state.ACTION_MOVE_FORWARD;
+//	    		return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+	    		
+	    		/*
+	    		 *  HADI
+	    		 */
+	    		
+	    		// Adding all neighbor (which are not added yet) of current square to the queue 
+	    		//     
+	    		//    -
+	    		//  - x -
+	    		//    -
+	    		//
+	    		ArrayList<Integer> temp = new ArrayList<>();
+	    		
+	    		for(int x: Arrays.asList(1,-1)) {
+	    			temp.add(state.agent_x_position + x);
+    				temp.add(state.agent_y_position);
+    				if(!q.contains(temp)) {
+    					q.add(temp);
+    				}
+	    		}
+	    		
+	    		for(int y: Arrays.asList(1,-1)) {
+	    			temp.add(state.agent_x_position);
+    				temp.add(state.agent_y_position + y);
+    				if(!q.contains(temp)) {
+    					q.add(temp);
+    				}
+	    		}
+	    		
+	    		
+	    		
+	    		
+	    		
+	    		
 	    	}
 	    }
 	}

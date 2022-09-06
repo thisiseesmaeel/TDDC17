@@ -8,6 +8,10 @@ import aima.core.agent.Percept;
 import aima.core.agent.impl.*;
 
 import java.util.Random;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 class MyAgentState
 {
@@ -95,7 +99,9 @@ class MyAgentState
 }
 
 class MyAgentProgram implements AgentProgram {
-
+	private Queue<ArrayList<Integer>> q = new LinkedList<>();
+	private ArrayList<Integer> goal_square = new ArrayList<>();
+	
 	private int initnialRandomActions = 10;
 	private Random random_generator = new Random();
 	
@@ -159,7 +165,6 @@ class MyAgentProgram implements AgentProgram {
 	    Boolean dirt = (Boolean)p.getAttribute("dirt");
 	    Boolean home = (Boolean)p.getAttribute("home");
 	    System.out.println("percept: " + p);
-	    System.out.println("HELLOOOOOOOOOOOOOOOOOOOOO");
 	    
 	    // State update based on the percept value and the last action
 	    state.updatePosition((DynamicPercept)percept);
@@ -196,17 +201,138 @@ class MyAgentProgram implements AgentProgram {
 	    } 
 	    else
 	    {
-	    	if (bump)
-	    	{
+	    	if(home) {
 	    		state.agent_last_action=state.ACTION_NONE;
 		    	return NoOpAction.NO_OP;
 	    	}
+	    	else if (bump)
+	    	{
+	    		state.agent_last_action=state.ACTION_TURN_RIGHT;
+		    	return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+	    	}
 	    	else
 	    	{
-	    		state.agent_last_action=state.ACTION_MOVE_FORWARD;
-	    		return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+//	    		state.agent_last_action=state.ACTION_MOVE_FORWARD;
+//	    		return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+	    		
+	    		/*
+	    		 *  HADI
+	    		 */
+	    		
+	    		if(q.isEmpty()) {
+	    			return NoOpAction.NO_OP;
+	    		}
+	    		
+	    		// Adding all neighbor (which are not added yet) of current square to the queue 
+	    		//     
+	    		//    -
+	    		//  - x -
+	    		//    -
+	    		//
+	    		ArrayList<Integer> temp = new ArrayList<>();
+	    		
+	    		for(int x: Arrays.asList(1,-1)) {
+	    			temp.add(state.agent_x_position + x);
+	    			temp.add(state.agent_y_position);
+	    			if(!q.contains(temp)) {
+	    				q.add(temp);
+	    			}
+	    		}
+	    		
+	    		for(int y: Arrays.asList(1,-1)) {
+	    			temp.add(state.agent_x_position);
+	    			temp.add(state.agent_y_position + y);
+	    			if(!q.contains(temp)) {
+	    				q.add(temp);
+	    			}
+	    		}
+	    		
+	    		if(goal_square.isEmpty() || goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
+	    			goal_square = q.remove();
+	    		}
+	    		
+	    		
+	    		Integer next_movement = findNextMovement(goal_square);
+	    		
+	    		if(next_movement == MyAgentState.NORTH) {
+	    			
+	    			switch (state.agent_direction) {
+	    			case MyAgentState.NORTH:
+	    				state.agent_last_action=state.ACTION_MOVE_FORWARD;
+	    				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+	    			case MyAgentState.EAST:
+	    				state.agent_last_action=state.ACTION_TURN_LEFT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+	    			case MyAgentState.SOUTH:
+	    				state.agent_last_action=state.ACTION_TURN_LEFT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+	    			case MyAgentState.WEST:
+	    				state.agent_last_action=state.ACTION_TURN_RIGHT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+	    			}
+	    		}
+	    		else if(next_movement == MyAgentState.EAST) {
+	    			
+	    			switch (state.agent_direction) {
+	    			case MyAgentState.NORTH:
+	    				state.agent_last_action=state.ACTION_TURN_RIGHT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+	    			case MyAgentState.EAST:
+	    				state.agent_last_action=state.ACTION_MOVE_FORWARD;
+	    				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+	    			case MyAgentState.SOUTH:
+	    				state.agent_last_action=state.ACTION_TURN_LEFT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+	    			case MyAgentState.WEST:
+	    				state.agent_last_action=state.ACTION_TURN_LEFT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+	    			}
+	    		}
+	    		else if(next_movement == MyAgentState.SOUTH) {
+	    			
+	    			switch (state.agent_direction) {
+	    			case MyAgentState.NORTH:
+	    				state.agent_last_action=state.ACTION_TURN_RIGHT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+	    			case MyAgentState.EAST:
+	    				state.agent_last_action=state.ACTION_TURN_RIGHT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+	    			case MyAgentState.SOUTH:
+	    				state.agent_last_action=state.ACTION_MOVE_FORWARD;
+	    				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+	    			case MyAgentState.WEST:
+	    				state.agent_last_action=state.ACTION_TURN_LEFT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+	    			}
+	    		}
+	    		else {
+	    			
+	    			switch (state.agent_direction) {
+	    			case MyAgentState.NORTH:
+	    				state.agent_last_action=state.ACTION_TURN_LEFT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+	    			case MyAgentState.EAST:
+	    				state.agent_last_action=state.ACTION_TURN_LEFT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+	    			case MyAgentState.SOUTH:
+	    				state.agent_last_action=state.ACTION_TURN_RIGHT;
+	    				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+	    			case MyAgentState.WEST:
+	    				state.agent_last_action=state.ACTION_MOVE_FORWARD;
+	    				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+	    			}
+	    		}
+	    		
+	    		return NoOpAction.NO_OP;
 	    	}
 	    }
+	}
+	
+	private Integer findNextMovement(ArrayList<Integer> goal_square) {
+		// Find a path to goal and tell me where to go (up, right, down or left?)
+		
+		return MyAgentState.SOUTH;
+		
 	}
 }
 
@@ -215,3 +341,6 @@ public class MyVacuumAgent extends AbstractAgent {
     	super(new MyAgentProgram());
 	}
 }
+
+
+
