@@ -2,6 +2,7 @@ package tddc17;
 
 
 import aima.core.environment.liuvacuum.*;
+
 import aima.core.agent.Action;
 import aima.core.agent.AgentProgram;
 import aima.core.agent.Percept;
@@ -10,8 +11,12 @@ import aima.core.agent.impl.*;
 import java.util.Random;
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import tddc17.ShortestPath;
 import tddc17.Node;
@@ -102,14 +107,15 @@ class MyAgentState
 }
 
 class MyAgentProgram implements AgentProgram {
-	private Queue<ArrayList<Integer>> q = new LinkedList<>();
+	private Queue<ArrayList<Integer>> q = new LinkedList<ArrayList<Integer>>();
 	private ArrayList<Integer> goal_square = new ArrayList<>();
+	Set<Node> nodes = new HashSet<Node>();
 	
-	private int initnialRandomActions = 10;
+	private int initnialRandomActions = 1;
 	private Random random_generator = new Random();
 	
 	// Here you can define your variables!
-	public int iterationCounter = 10;
+	public int iterationCounter = 1000;
 	public MyAgentState state = new MyAgentState();
 	
 	// moves the Agent to a random start position
@@ -146,6 +152,28 @@ class MyAgentProgram implements AgentProgram {
     		initnialRandomActions--;
     		state.updatePosition((DynamicPercept) percept);
 			System.out.println("Processing percepts after the last execution of moveToRandomStartPosition()");
+			
+			
+			for(int x: Arrays.asList(1,-1)) {
+				ArrayList<Integer> temp = new ArrayList<>();
+    			temp.add(state.agent_x_position + x);
+    			temp.add(state.agent_y_position);
+    			if(!q.contains(temp)) {
+    				q.add(temp);
+    			}
+    		}
+    		
+    		for(int y: Arrays.asList(1,-1)) {
+    			ArrayList<Integer> temp = new ArrayList<>();
+    			temp.add(state.agent_x_position);
+    			temp.add(state.agent_y_position + y);
+    			if(!q.contains(temp)) {
+    				q.add(temp);
+    			}
+    		}
+    		
+    		System.out.println("Initial Q: " + q);
+    		
 			state.agent_last_action=state.ACTION_SUCK;
 	    	return LIUVacuumEnvironment.ACTION_SUCK;
     	}
@@ -160,8 +188,10 @@ class MyAgentProgram implements AgentProgram {
 		
 	    iterationCounter--;
 	    
-	    if (iterationCounter==0)
+	    if (iterationCounter==0) {
+	    	System.out.println("Limit exceeded!");
 	    	return NoOpAction.NO_OP;
+	    }
 
 	    DynamicPercept p = (DynamicPercept) percept;
 	    Boolean bump = (Boolean)p.getAttribute("bump");
@@ -204,37 +234,51 @@ class MyAgentProgram implements AgentProgram {
 	    } 
 	    else
 	    {
-	    	if(home) {
-	    		state.agent_last_action=state.ACTION_NONE;
-		    	return NoOpAction.NO_OP;
-	    	}
-	    	else if (bump)
+//	    	if(home) {
+//	    		state.agent_last_action=state.ACTION_NONE;
+//		    	return NoOpAction.NO_OP;
+//	    	}
+	    	if (bump)
 	    	{
-	    		state.agent_last_action=state.ACTION_TURN_RIGHT;
-		    	return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+	    		switch (state.agent_direction) {
+				case MyAgentState.NORTH:
+					System.out.println(state.agent_x_position + state.agent_y_position-1);
+					removeNode(state.agent_x_position, state.agent_y_position-1);
+					break;
+				case MyAgentState.EAST:
+					removeNode(state.agent_x_position+1, state.agent_y_position);
+					break;
+				case MyAgentState.SOUTH:
+					removeNode(state.agent_x_position ,state.agent_y_position+1);
+					break;
+				case MyAgentState.WEST:
+					removeNode(state.agent_x_position-1, state.agent_y_position);
+					break;
+				}
+	    		
+	    		goal_square = q.remove();
+	    		
+	    		if(goal_square.get(0) == state.agent_x_position && goal_square.get(1) == state.agent_y_position) {
+	    			goal_square = q.remove();
+	    		}
+	    		
+	    		
+	    		Integer next_movement = findNextMovement(goal_square);
+	    		System.out.println("Next goal square:" + goal_square);
+	    		
+	    		return determine_next_action(next_movement);
+	    		
 	    	}
 	    	else
-	    	{
-//	    		state.agent_last_action=state.ACTION_MOVE_FORWARD;
-//	    		return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
-	    		
-	    		/*
-	    		 *  HADI
-	    		 */
-	    		
+	    	{	    		
 	    		if(q.isEmpty()) {
+	    			System.out.println("Queue is empty!");
 	    			return NoOpAction.NO_OP;
 	    		}
 	    		
 	    		// Adding all neighbor (which are not added yet) of current square to the queue 
-	    		//     
-	    		//    -
-	    		//  - x -
-	    		//    -
-	    		//
-	    		ArrayList<Integer> temp = new ArrayList<>();
-	    		
 	    		for(int x: Arrays.asList(1,-1)) {
+	    			ArrayList<Integer> temp = new ArrayList<>();
 	    			temp.add(state.agent_x_position + x);
 	    			temp.add(state.agent_y_position);
 	    			if(!q.contains(temp)) {
@@ -243,6 +287,7 @@ class MyAgentProgram implements AgentProgram {
 	    		}
 	    		
 	    		for(int y: Arrays.asList(1,-1)) {
+	    			ArrayList<Integer> temp = new ArrayList<>();
 	    			temp.add(state.agent_x_position);
 	    			temp.add(state.agent_y_position + y);
 	    			if(!q.contains(temp)) {
@@ -250,84 +295,62 @@ class MyAgentProgram implements AgentProgram {
 	    			}
 	    		}
 	    		
-	    		if(goal_square.isEmpty() || goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
-	    			goal_square = q.remove();
+	    		// Create a new node if it is not already exist and connecting its all neighbors (north, east, south and west)
+	    		Node new_node = new Node(Arrays.asList(state.agent_x_position , state.agent_y_position));
+	    		Node existing_node = hasNode(new_node);
+	    		Node temp_node = null;
+	    		
+	    		if(existing_node != null) {
+	    			temp_node = existing_node;
+	    		}
+	    		else {
+	    			temp_node = new_node;
+	    			nodes.add(temp_node);
 	    		}
 	    		
+    			for(int x: Arrays.asList(1,-1)) {
+	    			Node temp1 = new Node(Arrays.asList(state.agent_x_position + x, state.agent_y_position));
+	    			Node existing_neighbor = hasNode(temp1);
+	    			
+	    			if(existing_neighbor == null) {
+	    				nodes.add(temp1);
+	    				temp_node.add_neighbor(temp1);
+	    			}else {
+	    				temp_node.add_neighbor(existing_neighbor);
+	    			}
+	    		}
+	    		
+	    		for(int y: Arrays.asList(1,-1)) {
+	    			Node temp2 = new Node(Arrays.asList(state.agent_x_position, state.agent_y_position + y));
+	    			Node existing_neighbor = hasNode(temp2);
+	    			
+	    			if(existing_neighbor == null) {
+	    				nodes.add(temp2);
+	    				temp_node.add_neighbor(temp2);
+	    			}
+	    			else {
+	    				temp_node.add_neighbor(existing_neighbor);
+	    			}
+	    		}    		
+	    		
+	    		if(goal_square.isEmpty() || goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
+//	    			if(goal_square.isEmpty()) {
+//	    				System.out.println("goal square is empty");
+//	    			}
+//	    			if(goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
+//	    				System.out.println("My current position is goal square");
+//	    				System.out.println("My current position (" + state.agent_x_position + ", " +  state.agent_y_position + ")");
+//	    				System.out.println("My goal position (" + goal_square.get(0) + ", " +  goal_square.get(1) + ")");
+//	    			}
+	    			System.out.println("Now i reached the goal square");
+	    			goal_square = q.remove();
+	    			System.out.println("Next goal square is: " + goal_square);
+	    		}
 	    		
 	    		Integer next_movement = findNextMovement(goal_square);
 	    		
-	    		if(next_movement == MyAgentState.NORTH) {
-	    			
-	    			switch (state.agent_direction) {
-	    			case MyAgentState.NORTH:
-	    				state.agent_last_action=state.ACTION_MOVE_FORWARD;
-	    				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
-	    			case MyAgentState.EAST:
-	    				state.agent_last_action=state.ACTION_TURN_LEFT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
-	    			case MyAgentState.SOUTH:
-	    				state.agent_last_action=state.ACTION_TURN_LEFT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
-	    			case MyAgentState.WEST:
-	    				state.agent_last_action=state.ACTION_TURN_RIGHT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
-	    			}
-	    		}
-	    		else if(next_movement == MyAgentState.EAST) {
-	    			
-	    			switch (state.agent_direction) {
-	    			case MyAgentState.NORTH:
-	    				state.agent_last_action=state.ACTION_TURN_RIGHT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
-	    			case MyAgentState.EAST:
-	    				state.agent_last_action=state.ACTION_MOVE_FORWARD;
-	    				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
-	    			case MyAgentState.SOUTH:
-	    				state.agent_last_action=state.ACTION_TURN_LEFT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
-	    			case MyAgentState.WEST:
-	    				state.agent_last_action=state.ACTION_TURN_LEFT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
-	    			}
-	    		}
-	    		else if(next_movement == MyAgentState.SOUTH) {
-	    			
-	    			switch (state.agent_direction) {
-	    			case MyAgentState.NORTH:
-	    				state.agent_last_action=state.ACTION_TURN_RIGHT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
-	    			case MyAgentState.EAST:
-	    				state.agent_last_action=state.ACTION_TURN_RIGHT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
-	    			case MyAgentState.SOUTH:
-	    				state.agent_last_action=state.ACTION_MOVE_FORWARD;
-	    				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
-	    			case MyAgentState.WEST:
-	    				state.agent_last_action=state.ACTION_TURN_LEFT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
-	    			}
-	    		}
-	    		else {
-	    			
-	    			switch (state.agent_direction) {
-	    			case MyAgentState.NORTH:
-	    				state.agent_last_action=state.ACTION_TURN_LEFT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
-	    			case MyAgentState.EAST:
-	    				state.agent_last_action=state.ACTION_TURN_LEFT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
-	    			case MyAgentState.SOUTH:
-	    				state.agent_last_action=state.ACTION_TURN_RIGHT;
-	    				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
-	    			case MyAgentState.WEST:
-	    				state.agent_last_action=state.ACTION_MOVE_FORWARD;
-	    				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
-	    			}
-	    		}
 	    		
-	    		return NoOpAction.NO_OP;
-	    		
+	    		return determine_next_action(next_movement);
 	    	}
 	    }
 	}
@@ -335,30 +358,6 @@ class MyAgentProgram implements AgentProgram {
 	private Integer findNextMovement(ArrayList<Integer> goal_square) {
 		// Find a path to goal and tell me where to go (up, right, down or left?)
 		// Finding shortest path with help of BFS
-		
-		
-		
-		// Creating a graph representation based on current observation of the world
-		ArrayList<Node> nodes = new ArrayList<>();
-		for (int i=0; i < state.world.length; i++)
-		{
-			for (int j=0; j < state.world[i].length ; j++)
-			{
-				if (state.world[j][i]==state.CLEAR)
-					nodes.add(new Node(Arrays.asList(i,j)));
-			}
-			System.out.println("");
-		}
-		
-		
-		// connecting nodes which are neighbors
-		for(Node outer_node: nodes) {
-			for(Node inner_node: nodes) {
-				if(isNeighbor(outer_node, inner_node)) {
-					outer_node.add_neighbor(inner_node);
-				}
-			}
-		}
 		
 		// finding the goal node in graph
 		Node goal_node = null;
@@ -369,6 +368,8 @@ class MyAgentProgram implements AgentProgram {
 			}
 		}
 		
+		
+		//System.out.println("Current is (" + state.agent_x_position+ ", " + state.agent_y_position + ")" );
 		Node current_node = null;
 		for(Node node: nodes) {
 			if(node.getX() == state.agent_x_position && node.getY() == state.agent_y_position) {
@@ -376,10 +377,50 @@ class MyAgentProgram implements AgentProgram {
 				break;
 			}
 		}
+		System.out.println("Current is " + current_node);
+		System.out.println("Goal is " + goal_node);
 		
-		new ShortestPath(current_node, goal_node).bfs();
+//		System.out.println("");
+//		System.out.println("Graph representation");
+//		System.out.println("====================");
+//		
+//		for(Node node: nodes) {
+//			System.out.println(node + " :");
+//			for(Node n: node.neighbors) {
+//				System.out.println("Neighbor is " + n);
+//			}
+//		}
+//		System.out.println("");
 		
-		return MyAgentState.SOUTH;
+//		for(Node n: current_node.neighbors) {
+//			System.out.println("(" + n.getX()+ ", " + n.getY()+ ")" );
+//		}
+		
+		List<Node> route = new ShortestPath(current_node, goal_node).bfs();
+
+		//resetNodes();
+		
+		if(route.isEmpty()) {
+			System.out.println("No path found!");
+			return MyAgentState.NORTH;
+		}
+		
+		
+		Node next_node = route.get(1);
+		System.out.println("Next square towards the goal square is >>" + next_node);
+		
+		if(next_node.getX() < state.agent_x_position) {
+			return MyAgentState.WEST;
+		}
+		else if(next_node.getX() > state.agent_x_position) {
+			return MyAgentState.EAST;
+		}
+		else if(next_node.getY() < state.agent_y_position) {
+			return MyAgentState.NORTH;
+		}
+		else {
+			return MyAgentState.SOUTH;
+		}
 		
 	}
 	
@@ -398,6 +439,151 @@ class MyAgentProgram implements AgentProgram {
 		}
 		return false;
 	}
+	
+    private Node hasNode(Node node){
+		for(Node n: nodes){
+		    if(n.getX() == node.getX() && n.getY() == node.getY()){
+		    	return n;
+		    }
+		}
+		return null;
+    }
+    
+    private void resetNodes(){
+		for(Node n: nodes){
+			n.setVisited(false);
+		}
+    }
+    
+    
+    private Action determine_next_action(Integer next_movement) {
+    	if(next_movement == MyAgentState.NORTH) {
+			
+			switch (state.agent_direction) {
+			case MyAgentState.NORTH:
+				System.out.println("direction is north Should go forword");
+				state.agent_last_action=state.ACTION_MOVE_FORWARD;
+				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+			case MyAgentState.EAST:
+				System.out.println("direction is east Should turn left");
+				state.agent_direction = MyAgentState.NORTH;
+				state.agent_last_action=state.ACTION_TURN_LEFT;
+				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+			case MyAgentState.SOUTH:
+				System.out.println("direction is south Should turn left");
+				state.agent_direction = MyAgentState.EAST;
+				state.agent_last_action=state.ACTION_TURN_LEFT;
+				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+			case MyAgentState.WEST:
+				System.out.println("direction is west Should turn right");
+				state.agent_direction = MyAgentState.NORTH;
+				state.agent_last_action=state.ACTION_TURN_RIGHT;
+				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+			}
+		}
+		else if(next_movement == MyAgentState.EAST) {
+			
+			switch (state.agent_direction) {
+			case MyAgentState.NORTH:
+				System.out.println("direction is north Should turn right");
+				state.agent_direction = MyAgentState.EAST;
+				state.agent_last_action=state.ACTION_TURN_RIGHT;
+				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+			case MyAgentState.EAST:
+				System.out.println("direction is east Should go forward");
+				state.agent_last_action=state.ACTION_MOVE_FORWARD;
+				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+			case MyAgentState.SOUTH:
+				System.out.println("direction is south Should turn left");
+				state.agent_direction = MyAgentState.EAST;
+				state.agent_last_action=state.ACTION_TURN_LEFT;
+				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+			case MyAgentState.WEST:
+				System.out.println("direction is west Should turn left");
+				state.agent_direction = MyAgentState.SOUTH;
+				state.agent_last_action=state.ACTION_TURN_LEFT;
+				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+			}
+		}
+		else if(next_movement == MyAgentState.SOUTH) {
+			
+			switch (state.agent_direction) {
+			case MyAgentState.NORTH:
+				System.out.println("direction is north Should turn right");
+				state.agent_direction = MyAgentState.EAST;
+				state.agent_last_action=state.ACTION_TURN_RIGHT;
+				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+			case MyAgentState.EAST:
+				System.out.println("direction is east Should turn right");
+				state.agent_direction = MyAgentState.SOUTH;
+				state.agent_last_action=state.ACTION_TURN_RIGHT;
+				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+			case MyAgentState.SOUTH:
+				System.out.println("direction is south Should go forward");
+				state.agent_last_action=state.ACTION_MOVE_FORWARD;
+				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+			case MyAgentState.WEST:
+				System.out.println("direction is west Should turn left");
+				state.agent_direction = MyAgentState.SOUTH;
+				state.agent_last_action=state.ACTION_TURN_LEFT;
+				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+			}
+		}
+		else {
+			
+			switch (state.agent_direction) {
+			case MyAgentState.NORTH:
+				System.out.println("direction is north Should turn left");
+				state.agent_direction = MyAgentState.WEST;
+				state.agent_last_action=state.ACTION_TURN_LEFT;
+				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+			case MyAgentState.EAST:
+				System.out.println("direction is east Should turn left");
+				state.agent_direction = MyAgentState.NORTH;
+				state.agent_last_action=state.ACTION_TURN_LEFT;
+				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+			case MyAgentState.SOUTH:
+				System.out.println("direction is south Should turn right");
+				state.agent_direction = MyAgentState.WEST;
+				state.agent_last_action=state.ACTION_TURN_RIGHT;
+				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+			case MyAgentState.WEST:
+				System.out.println("direction is west Should go forward");
+				state.agent_last_action=state.ACTION_MOVE_FORWARD;
+				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+			}
+		}
+		
+		return NoOpAction.NO_OP;
+    }
+    
+    private void removeNode(Integer x, Integer y) {
+    	Iterator<Node> itr = nodes.iterator();
+    	while (itr.hasNext()) {
+    		// Remove this bump square from nodes
+			Node n = (Node)itr.next();
+			if (n.getX() == x && n.getY() == y){
+				System.out.println("Removing (" + x + ", " + y + ")");
+				itr.remove();
+				
+			}
+         }
+    	
+    	Iterator<Node> itr2 = nodes.iterator();
+    	while (itr2.hasNext()) {
+    		Node node = (Node)itr2.next();
+    		Iterator<Node> itr3 = node.neighbors.iterator();
+        	while (itr3.hasNext()) {
+        		// Remove this bump square from all nodes in which this square is a neighbor to
+    			Node n = (Node)itr3.next();
+    			if (n.getX() == x && n.getY() == y){
+    				System.out.println("(" + x + ", " + y + ") was neighbor to (" + node.getX() + ", " + node.getY() + ")");
+    				itr3.remove();
+    				break;
+    			}
+             }
+         }
+    }
 	
 }
 

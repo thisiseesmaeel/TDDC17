@@ -5,4 +5,5 @@
     <fullyQualifiedTypeName name="tddc17.MyAgentState"/>
     <fullyQualifiedTypeName name="tddc17.ShortestPath"/>
     <fullyQualifiedTypeName name="tddc17.Node"/>
+    <fullyQualifiedTypeName name="java.lang.System"/>
 </qualifiedTypeNameHistroy>

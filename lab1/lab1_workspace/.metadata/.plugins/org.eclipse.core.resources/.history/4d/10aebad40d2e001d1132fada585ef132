@@ -1,0 +1,149 @@
+package tddc17;
+
+
+import java.util.*;
+//Class representing graph nodes
+class Node{
+  Integer x;
+  Integer y;
+  List<Node> neighbors;
+  boolean visited = false;
+  Node prev = null;
+
+  Node(List<Integer> coordinates){
+	this.x = coordinates.get(0);
+	this.y = coordinates.get(1);
+	this.neighbors = new ArrayList<>();
+  }
+
+  //Method to connect nodes
+  void add_neighbor(Node node){
+	  for(Node n: neighbors){
+		    if(node.getX() == n.getX() && node.getY() == n.getY()){
+			return;
+		    }
+		}
+	this.neighbors.add(node);
+	node.neighbors.add(this);
+  }
+
+  //Node representation
+  public String toString(){
+	return "(" + this.x + ", " + this.y + ")";
+  }
+  
+  public Integer getX() {
+	  return this.x;
+  }
+  
+  public Integer getY() {
+	  return this.y;
+  }
+}
+
+
+//class implmenting the algorithm
+class ShortestPath{
+  Node start, end;
+
+  ShortestPath(Node start, Node end){
+	this.start = start;
+	this.end = end;
+  }
+
+  public List<Node> bfs(){
+	//Create queue
+	Queue<Node> queue = new LinkedList<>();
+
+	//Visit and add start node to the queue
+	start.visited = true;
+	queue.add(start);
+
+	//BFS until queue is empty and not reached to the end node
+	while(!queue.isEmpty()){
+	    //pop a node from queue for search operation
+	    Node current_node = queue.poll();
+	    //Loop through neighbors node to find the 'end'
+	    for(Node node: current_node.neighbors){
+	  
+		if(!node.visited){
+		    //Visit and add the node to the queue
+		    node.visited =true;
+		    queue.add(node);
+		    //update its precedings nodes
+		    node.prev = current_node;
+		    //If reached the end node then stop BFS
+		    // if(node==end){
+		    //   queue.clear();
+		    //   System.out.println("Found a path");
+		    //   break;
+		    // }
+		    // System.out.println("My goal square: (" + end.x.get(0) + ", " + end.name.get(1) // 
+				       // + ")");
+		    // System.out.println("Current Square: (" + node.name.get(0) + ", " + node.name.get(1) + ")");
+	  	  
+		    if(node==end){
+			queue.clear();
+			System.out.println("Found a path!");
+			break;
+		    }
+	   
+		}
+	    }
+	}
+	return trace_route();
+  }
+
+  //Function to trace the route using preceding nodes
+  private List<Node> trace_route(){
+	Node node = end;
+	List<Node> route = new ArrayList<>();
+	//Loop until node is null to reach start node
+	//becasue start.prev == null
+	while(node != null){
+	    route.add(node);
+	    node = node.prev;
+	}
+	//Reverse the route - bring start to the front
+	Collections.reverse(route);
+	//Output the route
+	System.out.println(route);
+	return route;
+  }
+}
+
+//Driver Code
+class Main {
+  public static void main(String[] args) {
+	  
+	//create nodes
+	Node node_1 = new Node(Arrays.asList(0,0));
+	Node node_2 = new Node(Arrays.asList(0,1));
+	Node node_3 = new Node(Arrays.asList(1,1));
+	Node node_4 = new Node(Arrays.asList(2,1));
+	Node node_5 = new Node(Arrays.asList(0,2));
+	Node node_6 = new Node(Arrays.asList(1,2));
+	Node node_7 = new Node(Arrays.asList(2,2));
+
+	//connect nodes (i.e. create graph)
+	node_1.add_neighbor(node_2);
+    
+	node_2.add_neighbor(node_1);
+	node_2.add_neighbor(node_5);
+    
+	node_3.add_neighbor(node_6);
+    
+	node_4.add_neighbor(node_7);
+    
+	node_5.add_neighbor(node_2);
+	node_5.add_neighbor(node_6);
+    
+	node_6.add_neighbor(node_5);
+	node_6.add_neighbor(node_7);
+    
+	node_7.add_neighbor(node_4);
+	node_7.add_neighbor(node_6);
+
+	new ShortestPath(node_3, node_1).bfs();
+  }
+}

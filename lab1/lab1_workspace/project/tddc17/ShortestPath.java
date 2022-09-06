@@ -18,6 +18,11 @@ class Node{
 
   //Method to connect nodes
   void add_neighbor(Node node){
+	  for(Node n: neighbors){
+		    if(node.getX() == n.getX() && node.getY() == n.getY()){
+			return;
+		    }
+		}
 	this.neighbors.add(node);
 	node.neighbors.add(this);
   }
@@ -34,6 +39,10 @@ class Node{
   public Integer getY() {
 	  return this.y;
   }
+  
+  public void setVisited(boolean visited) {
+	  this.visited = visited;
+  }
 }
 
 
@@ -46,63 +55,66 @@ class ShortestPath{
 	this.end = end;
   }
 
-  public void bfs(){
+  public List<Node> bfs(){
 	//Create queue
 	Queue<Node> queue = new LinkedList<>();
 
+	ArrayList<Node> visited = new ArrayList<>();
 	//Visit and add start node to the queue
-	start.visited = true;
+	visited.add(start);
+	//start.visited = true;
 	queue.add(start);
 
 	//BFS until queue is empty and not reached to the end node
 	while(!queue.isEmpty()){
 	    //pop a node from queue for search operation
 	    Node current_node = queue.poll();
+	    
 	    //Loop through neighbors node to find the 'end'
 	    for(Node node: current_node.neighbors){
-	  
-		if(!node.visited){
-		    //Visit and add the node to the queue
-		    node.visited =true;
-		    queue.add(node);
-		    //update its precedings nodes
-		    node.prev = current_node;
-		    //If reached the end node then stop BFS
-		    // if(node==end){
-		    //   queue.clear();
-		    //   System.out.println("Found a path");
-		    //   break;
-		    // }
-		    // System.out.println("My goal square: (" + end.x.get(0) + ", " + end.name.get(1) // 
-				       // + ")");
-		    // System.out.println("Current Square: (" + node.name.get(0) + ", " + node.name.get(1) + ")");
-	  	  
-		    if(node==end){
-			queue.clear();
-			System.out.println("Found a path!");
-			break;
-		    }
-	   
-		}
+	    	boolean condition = false;
+	    	for(Node n: visited) {
+	    		if(n.getX() == node.getX() && n.getY() == node.getY()) {
+	    			condition = true;
+	    			break;
+	    		}
+	    	}
+			if(!condition){
+			    //Visit and add the node to the queue
+			    //node.visited =true;
+				visited.add(node);
+			    queue.add(node);
+			    //update its precedings nodes
+			    node.prev = current_node;
+		  	  
+			    if(node==end){
+					queue.clear();
+					System.out.println("\nFound a path!");
+					break;
+			    }
+		   
+			}
 	    }
 	}
-	trace_route();
+	return trace_route();
   }
 
   //Function to trace the route using preceding nodes
-  private void trace_route(){
+  private List<Node> trace_route(){
 	Node node = end;
 	List<Node> route = new ArrayList<>();
 	//Loop until node is null to reach start node
 	//becasue start.prev == null
-	while(node != null){
+	while(node != start){
 	    route.add(node);
 	    node = node.prev;
 	}
+	route.add(node);
 	//Reverse the route - bring start to the front
 	Collections.reverse(route);
 	//Output the route
 	System.out.println(route);
+	return route;
   }
 }
 
