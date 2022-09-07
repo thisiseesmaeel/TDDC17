@@ -303,11 +303,11 @@ class MyAgentProgram implements AgentProgram {
 	    			goal_square = home_Coordinates;
 	    		}
 	    		else if(q.isEmpty() && !(goal_square.get(0) == 1 && goal_square.get(1) == 1) && (state.agent_x_position == 1 && state.agent_y_position ==1)) {
-	    			System.out.println("q is empty and goal is not home and current position is home");
+	    			System.out.println("Blalal");
 	    			return NoOpAction.NO_OP;
 	    		}
 	    		else if(q.isEmpty() && !(goal_square.get(0) == 1 && goal_square.get(1) == 1)) {
-	    			System.out.println("q is empty and goal is not home");
+	    			System.out.println("kalkalakall");
 	    			return NoOpAction.NO_OP;
 	    		}
 	
@@ -319,7 +319,7 @@ class MyAgentProgram implements AgentProgram {
 	    	}
 	    	else
 	    	{	
-	    		return getAction();
+	    		return test();
 	    	}
 	    }
 	}
@@ -512,7 +512,7 @@ class MyAgentProgram implements AgentProgram {
          }
     }
     
-    private Action getAction() {
+    private Action test() {
     	// Adding all neighbor (which are not added yet) of current square to the queue 
 		for(int x: Arrays.asList(1,-1)) {
 			ArrayList<Integer> temp = new ArrayList<>();

@@ -238,21 +238,21 @@ class MyAgentProgram implements AgentProgram {
 	    {
 	    	System.out.println("Queue is " + q);
 	    	
-	    	if(home && q.isEmpty() && !bump && goal_square.get(0) == 1 && goal_square.get(1) == 1) {
+	    	if(home && q.isEmpty() && !bump && goal_square.get(0) == 1 && goal_square.get(1) == 1 ) {
 	    		state.agent_last_action=state.ACTION_NONE;
 		    	return NoOpAction.NO_OP;
 	    	}
-//	    	else if(!home && q.isEmpty() && goal_square.get(0) == 1 && goal_square.get(1) == 1 && !bump) {
-//	    		System.out.println("Queue is empty!");
-//	    		ArrayList<Integer> home_Coordinates = new ArrayList<>();
-//    			home_Coordinates.add(1);
-//    			home_Coordinates.add(1);
-//    			goal_square = home_Coordinates;
-//    			Integer next_movement = findNextMovement(goal_square);
-//	    		System.out.println("Next goal square:" + goal_square);
-//	    		
-//	    		return determine_next_action(next_movement);
-//	    	}
+	    	else if(!home && q.isEmpty() && goal_square.get(0) == 1 && goal_square.get(1) == 1 && !bump) {
+	    		System.out.println("Queue is empty!");
+	    		ArrayList<Integer> home_Coordinates = new ArrayList<>();
+    			home_Coordinates.add(1);
+    			home_Coordinates.add(1);
+    			goal_square = home_Coordinates;
+    			Integer next_movement = findNextMovement(goal_square);
+	    		System.out.println("Next goal square:" + goal_square);
+	    		
+	    		return determine_next_action(next_movement);
+	    	}
 	    	
 	    	if (bump)
 	    	{
@@ -283,18 +283,18 @@ class MyAgentProgram implements AgentProgram {
 				}
 	    		
 	    		
-	    		System.out.println("BUMP: goal is "+ goal_square);
+	    		System.out.println("goallllllllllll is "+ goal_square);
 	    		if(!q.isEmpty() && goal_square.get(0) == bumpX && goal_square.get(1) == bumpY ) {
-	    			System.out.println("Q is not empty and goal is BLOCKED!");
+	    			System.out.println("Q is not empty!");
 	    			goal_square = q.remove();
-	    			System.out.println("Removing from Q and determining new goal");
+	    			System.out.println("Removing from Q 1");
 		    		
 		    		if(goal_square.get(0) == state.agent_x_position && goal_square.get(1) == state.agent_y_position && !q.isEmpty()) {
 		    			goal_square = q.remove();
 		    			System.out.println("Removing from Q 2");
 		    		}
 	    		}
-	    		else if(q.isEmpty() && (goal_square.get(0) == bumpX && goal_square.get(1) == bumpY) && !(state.agent_x_position == 1 && state.agent_y_position ==1)) {
+	    		else if(q.isEmpty() && !(goal_square.get(0) == 1 && goal_square.get(1) == 1)) {
 	    			// time to find a path home
 	    			System.out.println("Q is empty and goal in not home");
 	    			ArrayList<Integer> home_Coordinates = new ArrayList<>();
@@ -302,24 +302,34 @@ class MyAgentProgram implements AgentProgram {
 	    			home_Coordinates.add(1);
 	    			goal_square = home_Coordinates;
 	    		}
-	    		else if(q.isEmpty() && !(goal_square.get(0) == 1 && goal_square.get(1) == 1) && (state.agent_x_position == 1 && state.agent_y_position ==1)) {
-	    			System.out.println("q is empty and goal is not home and current position is home");
-	    			return NoOpAction.NO_OP;
-	    		}
-	    		else if(q.isEmpty() && !(goal_square.get(0) == 1 && goal_square.get(1) == 1)) {
-	    			System.out.println("q is empty and goal is not home");
-	    			return NoOpAction.NO_OP;
-	    		}
-	
-	    		Integer next_movement = findNextMovement(goal_square);
-	    		System.out.println("Next goal square:" + goal_square);
-	    		
-	    		return determine_next_action(next_movement);
+//	    		
+	    		return test();
+//	    		
+//	    		Integer next_movement = findNextMovement(goal_square);
+//	    		System.out.println("Next goal square:" + goal_square);
+//	    		
+//	    		return determine_next_action(next_movement);
 	    		
 	    	}
 	    	else
-	    	{	
-	    		return getAction();
+	    	{	    		
+//	    		if(q.isEmpty()) {
+//	    			System.out.println("Queue is empty!");
+//	    			ArrayList<Integer> home_Coordinates = new ArrayList<>();
+//	    			home_Coordinates.add(1);
+//	    			home_Coordinates.add(1);
+//	    			
+//	    			if(state.agent_x_position != home_Coordinates.get(0) && state.agent_y_position != home_Coordinates.get(1)) {
+//	    				goal_square = home_Coordinates;
+//	    				Integer next_movement = findNextMovement(goal_square);
+//	    				return determine_next_action(next_movement);	    				
+//	    			}
+//	    			return NoOpAction.NO_OP;
+//		    		
+//	    		}
+	    		return test();
+	    		
+	    		
 	    	}
 	    }
 	}
@@ -337,6 +347,7 @@ class MyAgentProgram implements AgentProgram {
 			}
 		}
 		
+		//System.out.println("Current is (" + state.agent_x_position+ ", " + state.agent_y_position + ")" );
 		Node current_node = null;
 		for(Node node: nodes) {
 			if(node.getX() == state.agent_x_position && node.getY() == state.agent_y_position) {
@@ -346,6 +357,22 @@ class MyAgentProgram implements AgentProgram {
 		}
 		System.out.println("Current is " + current_node);
 		System.out.println("Goal is " + goal_node);
+		
+//		System.out.println("");
+//		System.out.println("Graph representation");
+//		System.out.println("====================");
+//		
+//		for(Node node: nodes) {
+//			System.out.println(node + " :");
+//			for(Node n: node.neighbors) {
+//				System.out.println("Neighbor is " + n);
+//			}
+//		}
+//		System.out.println("");
+		
+//		for(Node n: current_node.neighbors) {
+//			System.out.println("(" + n.getX()+ ", " + n.getY()+ ")" );
+//		}
 		
 		List<Node> route = new ShortestPath(current_node, goal_node).bfs();
 
@@ -512,7 +539,7 @@ class MyAgentProgram implements AgentProgram {
          }
     }
     
-    private Action getAction() {
+    private Action test() {
     	// Adding all neighbor (which are not added yet) of current square to the queue 
 		for(int x: Arrays.asList(1,-1)) {
 			ArrayList<Integer> temp = new ArrayList<>();
@@ -587,6 +614,14 @@ class MyAgentProgram implements AgentProgram {
 		}    		
 		
 		if(goal_square.isEmpty() || goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
+//			if(goal_square.isEmpty()) {
+//				System.out.println("goal square is empty");
+//			}
+//			if(goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
+//				System.out.println("My current position is goal square");
+//				System.out.println("My current position (" + state.agent_x_position + ", " +  state.agent_y_position + ")");
+//				System.out.println("My goal position (" + goal_square.get(0) + ", " +  goal_square.get(1) + ")");
+//			}
 			System.out.println("Now i reached the goal square");
 			goal_square = q.remove();
 			System.out.println("Removing from Q");
