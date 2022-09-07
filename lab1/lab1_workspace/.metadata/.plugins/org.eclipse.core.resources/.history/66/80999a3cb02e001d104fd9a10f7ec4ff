@@ -298,12 +298,12 @@ class MyAgentProgram implements AgentProgram {
 	    			goal_square = home_Coordinates;
 	    		}
 //	    		
-	    		//return test();
+	    		return test();
 //	    		
-	    		Integer next_movement = findNextMovement(goal_square);
-	    		System.out.println("Next goal square:" + goal_square);
-	    		
-	    		return determine_next_action(next_movement);
+//	    		Integer next_movement = findNextMovement(goal_square);
+//	    		System.out.println("Next goal square:" + goal_square);
+//	    		
+//	    		return determine_next_action(next_movement);
 	    		
 	    	}
 	    	else

@@ -238,11 +238,11 @@ class MyAgentProgram implements AgentProgram {
 	    {
 	    	System.out.println("Queue is " + q);
 	    	
-	    	if(home && q.isEmpty() && !bump) {
+	    	if(home && q.isEmpty()) {
 	    		state.agent_last_action=state.ACTION_NONE;
 		    	return NoOpAction.NO_OP;
 	    	}
-	    	else if(!home && q.isEmpty() && goal_square.get(0) == 1 && goal_square.get(1) == 1 && !bump) {
+	    	else if(!home && q.isEmpty()) {
 	    		System.out.println("Queue is empty!");
 	    		ArrayList<Integer> home_Coordinates = new ArrayList<>();
     			home_Coordinates.add(1);
@@ -253,7 +253,6 @@ class MyAgentProgram implements AgentProgram {
 	    		
 	    		return determine_next_action(next_movement);
 	    	}
-	    	
 	    	if (bump)
 	    	{
 	    		Integer bumpX = 0;
@@ -281,29 +280,27 @@ class MyAgentProgram implements AgentProgram {
 					break;
 				}
 	    		
-	    		if(!q.isEmpty() && goal_square.get(0) == bumpX && goal_square.get(1) == bumpY ) {
-	    			goal_square = q.remove();
-	    			System.out.println("Removing from Q 1");
-		    		
-		    		if(goal_square.get(0) == state.agent_x_position && goal_square.get(1) == state.agent_y_position && !q.isEmpty()) {
-		    			goal_square = q.remove();
-		    			System.out.println("Removing from Q 2");
-		    		}
-	    		}
-	    		else if(q.isEmpty() && goal_square.get(0) != 1 && goal_square.get(1) != 1) {
-	    			// time to find a path home
-	    			ArrayList<Integer> home_Coordinates = new ArrayList<>();
-	    			home_Coordinates.add(1);
-	    			home_Coordinates.add(1);
-	    			goal_square = home_Coordinates;
-	    		}
+	    		return test();
+//	    		if(!q.isEmpty() && goal_square.get(0) == bumpX && goal_square.get(1) == bumpY ) {
+//	    			goal_square = q.remove();
+//		    		
+//		    		if(goal_square.get(0) == state.agent_x_position && goal_square.get(1) == state.agent_y_position && !q.isEmpty()) {
+//		    			goal_square = q.remove();
+//		    		}
+//	    		}
+//	    		else if(q.isEmpty()) {
+//	    			// time to find a path home
+//	    			ArrayList<Integer> home_Coordinates = new ArrayList<>();
+//	    			home_Coordinates.add(1);
+//	    			home_Coordinates.add(1);
+//	    			goal_square = home_Coordinates;
+//	    		}
 //	    		
-	    		//return test();
 //	    		
-	    		Integer next_movement = findNextMovement(goal_square);
-	    		System.out.println("Next goal square:" + goal_square);
-	    		
-	    		return determine_next_action(next_movement);
+//	    		Integer next_movement = findNextMovement(goal_square);
+//	    		System.out.println("Next goal square:" + goal_square);
+//	    		
+//	    		return determine_next_action(next_movement);
 	    		
 	    	}
 	    	else
@@ -644,7 +641,6 @@ class MyAgentProgram implements AgentProgram {
 //			}
 			System.out.println("Now i reached the goal square");
 			goal_square = q.remove();
-			System.out.println("Removing from Q");
 			System.out.println("Next goal square is: " + goal_square);
 		}
 		
