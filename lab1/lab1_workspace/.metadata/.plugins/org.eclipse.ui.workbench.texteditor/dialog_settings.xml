@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="direction"/>
+		<item key="selection" value="direction is east Should go for"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="direction is east should go for"/>
+			<item value="package tddc17;"/>
+			<item value="goal_square"/>
+			<item value="direction is south Should turn left"/>
+			<item value="direction is east"/>
 			<item value="direction"/>
 			<item value="Perf"/>
 			<item value="Per"/>
 			<item value="performance"/>
-			<item value="&quot;Action"/>
-			<item value="Action"/>
-			<item value="A"/>
 		</list>
 		<list key="replacehistory">
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item key="DIALOG_X_ORIGIN" value="782"/>
-		<item key="DIALOG_Y_ORIGIN" value="199"/>
+		<item key="DIALOG_X_ORIGIN" value="1214"/>
+		<item key="DIALOG_Y_ORIGIN" value="190"/>
 		<item key="DIALOG_WIDTH" value="363"/>
 		<item key="DIALOG_HEIGHT" value="437"/>
 		<item key="DIALOG_FONT_NAME" value="1|Ubuntu|11.0|0|GTK|1|"/>

@@ -110,12 +110,14 @@ class MyAgentProgram implements AgentProgram {
 	private Queue<ArrayList<Integer>> q = new LinkedList<ArrayList<Integer>>();
 	private ArrayList<Integer> goal_square = new ArrayList<>();
 	Set<Node> nodes = new HashSet<Node>();
+	Set<Node> visited_nodes = new HashSet<Node>();
+	
 	
 	private int initnialRandomActions = 1;
 	private Random random_generator = new Random();
 	
 	// Here you can define your variables!
-	public int iterationCounter = 1000;
+	public int iterationCounter = 10000;
 	public MyAgentState state = new MyAgentState();
 	
 	// moves the Agent to a random start position
@@ -234,32 +236,63 @@ class MyAgentProgram implements AgentProgram {
 	    } 
 	    else
 	    {
-//	    	if(home) {
-//	    		state.agent_last_action=state.ACTION_NONE;
-//		    	return NoOpAction.NO_OP;
-//	    	}
+	    	System.out.println("Queue is " + q);
+	    	
+	    	if(home && q.isEmpty()) {
+	    		state.agent_last_action=state.ACTION_NONE;
+		    	return NoOpAction.NO_OP;
+	    	}
+	    	else if(!home && q.isEmpty()) {
+	    		System.out.println("Queue is empty!");
+	    		ArrayList<Integer> home_Coordinates = new ArrayList<>();
+    			home_Coordinates.add(1);
+    			home_Coordinates.add(1);
+    			goal_square = home_Coordinates;
+    			Integer next_movement = findNextMovement(goal_square);
+	    		System.out.println("Next goal square:" + goal_square);
+	    		
+	    		return determine_next_action(next_movement);
+	    	}
 	    	if (bump)
 	    	{
+	    		Integer bumpX = 0;
+	    		Integer bumpY = 0;
 	    		switch (state.agent_direction) {
 				case MyAgentState.NORTH:
-					System.out.println(state.agent_x_position + state.agent_y_position-1);
+					bumpX = state.agent_x_position;
+					bumpY = state.agent_y_position - 1;
 					removeNode(state.agent_x_position, state.agent_y_position-1);
 					break;
 				case MyAgentState.EAST:
-					removeNode(state.agent_x_position+1, state.agent_y_position);
+					bumpX = state.agent_x_position + 1;
+					bumpY = state.agent_y_position;
+					removeNode(state.agent_x_position + 1, state.agent_y_position);
 					break;
 				case MyAgentState.SOUTH:
+					bumpX = state.agent_x_position;
+					bumpY = state.agent_y_position + 1;
 					removeNode(state.agent_x_position ,state.agent_y_position+1);
 					break;
 				case MyAgentState.WEST:
-					removeNode(state.agent_x_position-1, state.agent_y_position);
+					bumpX = state.agent_x_position - 1;
+					bumpY = state.agent_y_position;
+					removeNode(state.agent_x_position - 1, state.agent_y_position);
 					break;
 				}
 	    		
-	    		goal_square = q.remove();
-	    		
-	    		if(goal_square.get(0) == state.agent_x_position && goal_square.get(1) == state.agent_y_position) {
-	    			goal_square = q.remove();
+	    		if(!q.isEmpty() && goal_square.get(0) == bumpX && goal_square.get(1) == bumpY ) {
+		    		goal_square = q.remove();
+		    		
+		    		if(goal_square.get(0) == state.agent_x_position && goal_square.get(1) == state.agent_y_position && !q.isEmpty()) {
+		    			goal_square = q.remove();
+		    		}
+	    		}
+	    		else if(q.isEmpty()) {
+	    			// time to find a path home
+	    			ArrayList<Integer> home_Coordinates = new ArrayList<>();
+	    			home_Coordinates.add(1);
+	    			home_Coordinates.add(1);
+	    			goal_square = home_Coordinates;
 	    		}
 	    		
 	    		
@@ -271,17 +304,35 @@ class MyAgentProgram implements AgentProgram {
 	    	}
 	    	else
 	    	{	    		
-	    		if(q.isEmpty()) {
-	    			System.out.println("Queue is empty!");
-	    			return NoOpAction.NO_OP;
-	    		}
+//	    		if(q.isEmpty()) {
+//	    			System.out.println("Queue is empty!");
+//	    			ArrayList<Integer> home_Coordinates = new ArrayList<>();
+//	    			home_Coordinates.add(1);
+//	    			home_Coordinates.add(1);
+//	    			
+//	    			if(state.agent_x_position != home_Coordinates.get(0) && state.agent_y_position != home_Coordinates.get(1)) {
+//	    				goal_square = home_Coordinates;
+//	    				Integer next_movement = findNextMovement(goal_square);
+//	    				return determine_next_action(next_movement);	    				
+//	    			}
+//	    			return NoOpAction.NO_OP;
+//		    		
+//	    		}
 	    		
 	    		// Adding all neighbor (which are not added yet) of current square to the queue 
 	    		for(int x: Arrays.asList(1,-1)) {
 	    			ArrayList<Integer> temp = new ArrayList<>();
 	    			temp.add(state.agent_x_position + x);
 	    			temp.add(state.agent_y_position);
-	    			if(!q.contains(temp)) {
+	    			boolean has_visited = false;
+	    			for(Node node: visited_nodes) {
+	    				if(node.getX() == state.agent_x_position + x && node.getY() == state.agent_y_position) {
+	    					has_visited = true;
+	    					break;
+	    				}
+	    			}
+	    			if(!has_visited) {
+	    				visited_nodes.add(new Node(Arrays.asList(state.agent_x_position + x, state.agent_y_position)));
 	    				q.add(temp);
 	    			}
 	    		}
@@ -290,7 +341,15 @@ class MyAgentProgram implements AgentProgram {
 	    			ArrayList<Integer> temp = new ArrayList<>();
 	    			temp.add(state.agent_x_position);
 	    			temp.add(state.agent_y_position + y);
-	    			if(!q.contains(temp)) {
+	    			boolean has_visited = false;
+	    			for(Node node: visited_nodes) {
+	    				if(node.getX() == state.agent_x_position && node.getY() == state.agent_y_position + y) {
+	    					has_visited = true;
+	    					break;
+	    				}
+	    			}
+	    			if(!has_visited) {
+	    				visited_nodes.add(new Node(Arrays.asList(state.agent_x_position, state.agent_y_position + y)));
 	    				q.add(temp);
 	    			}
 	    		}
