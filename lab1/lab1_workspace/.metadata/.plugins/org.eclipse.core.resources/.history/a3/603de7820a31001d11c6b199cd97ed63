@@ -116,10 +116,10 @@ class MyAgentProgram implements AgentProgram {
 	
 	public MyAgentProgram() {
 		// TODO Auto-generated constructor stub
-		adjacent_squares.add(Arrays.asList(1, 0));
-		adjacent_squares.add(Arrays.asList(-1, 0));
 		adjacent_squares.add(Arrays.asList(0, 1));
 		adjacent_squares.add(Arrays.asList(0, -1));
+		adjacent_squares.add(Arrays.asList(1, 0));
+		adjacent_squares.add(Arrays.asList(-1, 0));
 	}
 	
 	
