@@ -121,7 +121,7 @@ class MyAgentProgram implements AgentProgram {
 		adjacent_squares.add(Arrays.asList(0, -1));
 	}
 	
-	private int initnialRandomActions = 10;
+	private int initnialRandomActions = 0;
 	private Random random_generator = new Random();
 	
 	// Here you can define your variables!
