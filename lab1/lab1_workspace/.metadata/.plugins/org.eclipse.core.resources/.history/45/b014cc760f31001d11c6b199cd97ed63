@@ -280,10 +280,13 @@ class MyAgentProgram implements AgentProgram {
 	    			return NoOpAction.NO_OP;
 	    		}
 	    		
+	    		//goal_square = getNextGoalSquare();	
 	    		Integer next_movement = findNextMovement(goal_square);
 	    		System.out.println("Next goal square:" + goal_square);
 	    		
 	    		return determine_next_action(next_movement);
+	    		return getAction();
+	    		
 	    	}
 	    	else
 	    	{	
@@ -496,6 +499,26 @@ class MyAgentProgram implements AgentProgram {
 		}
 		
 		return NoOpAction.NO_OP;
+    }
+    
+    public ArrayList<Integer> getNextGoalSquare(){
+    	ArrayList<Integer> next_goal_square = new ArrayList<>(Arrays.asList(state.agent_x_position, state.agent_y_position));
+    	System.out.println("Now i reached the goal square!");
+//    	if(q.isEmpty()) {
+//    		next_goal_square =  new ArrayList<>(Arrays.asList(1,1));
+//    		return next_goal_square;
+//    	}
+		System.out.println("Next goal square is: " + goal_square);
+		
+		if(!q.isEmpty() && next_goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
+			goal_square = q.remove();
+		}
+		else if(q.isEmpty() && next_goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
+			// Go to home namely square => (1, 1)
+			next_goal_square =  new ArrayList<>(Arrays.asList(1,1));
+		}
+		
+		return next_goal_square;
     }
     
     private Node findNode(Integer x, Integer y){

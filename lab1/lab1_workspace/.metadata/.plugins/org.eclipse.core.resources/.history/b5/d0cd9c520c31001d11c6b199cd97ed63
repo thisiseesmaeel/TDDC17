@@ -121,7 +121,7 @@ class MyAgentProgram implements AgentProgram {
 		adjacent_squares.add(Arrays.asList(0, -1));
 	}
 	
-	private int initnialRandomActions = 0;
+	private int initnialRandomActions = 10;
 	private Random random_generator = new Random();
 	
 	// Here you can define your variables!
@@ -257,19 +257,19 @@ class MyAgentProgram implements AgentProgram {
 				}
 	    		
 	    		visited_nodes.add(new Node(Arrays.asList(bumpX, bumpY)));
-	    		System.out.println("BUMP: goal is "+ goal_square);
-	    		if(!q.isEmpty() && goal_square.get(0) == bumpX && goal_square.get(1) == bumpY ) {
-	    			System.out.println("Q is not empty and goal is blocked!");
-	    			goal_square = q.remove();
-		    		
-		    		if(!q.isEmpty() && goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
-		    			goal_square = q.remove();
-		    		}
-		    		else if(q.isEmpty() && goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
-		    			// Go to home namely square => (1, 1)
-		    			goal_square =  new ArrayList<>(Arrays.asList(1,1));
-		    		}
-	    		}
+//	    		System.out.println("BUMP: goal is "+ goal_square);
+//	    		if(!q.isEmpty() && goal_square.get(0) == bumpX && goal_square.get(1) == bumpY ) {
+//	    			System.out.println("Q is not empty and goal is blocked!");
+//	    			goal_square = q.remove();
+//		    		
+//		    		if(!q.isEmpty() && goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
+//		    			goal_square = q.remove();
+//		    		}
+//		    		else if(q.isEmpty() && goal_square.equals(Arrays.asList(state.agent_x_position, state.agent_y_position))) {
+//		    			// Go to home namely square => (1, 1)
+//		    			goal_square =  new ArrayList<>(Arrays.asList(1,1));
+//		    		}
+//	    		}
 	    		if(q.isEmpty() && (goal_square.get(0) == bumpX && goal_square.get(1) == bumpY) && !(state.agent_x_position == 1 && state.agent_y_position == 1)) {
 	    			System.out.println("Q is empty and goal is blocked and current position is not home");
 	    			// Go to home namely square => (1, 1)
@@ -279,11 +279,13 @@ class MyAgentProgram implements AgentProgram {
 	    			System.out.println("q is empty and goal is blocked and current position is home");
 	    			return NoOpAction.NO_OP;
 	    		}
+	
+//	    		Integer next_movement = findNextMovement(goal_square);
+//	    		System.out.println("Next goal square:" + goal_square);
+//	    		
+//	    		return determine_next_action(next_movement);
+	    		return getAction();
 	    		
-	    		Integer next_movement = findNextMovement(goal_square);
-	    		System.out.println("Next goal square:" + goal_square);
-	    		
-	    		return determine_next_action(next_movement);
 	    	}
 	    	else
 	    	{	
