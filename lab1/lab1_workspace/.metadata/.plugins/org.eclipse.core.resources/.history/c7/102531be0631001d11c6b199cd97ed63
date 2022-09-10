@@ -317,9 +317,18 @@ class MyAgentProgram implements AgentProgram {
 			}
 			
 		}
+
 		
 		// Updating robots internal graph. Create a new node if it is not already exist and connecting its all neighbors (north, east, south and west)
 		// Our internal graph getting updated so it becomes more effective when it tries to find shortest path
+//		Node new_node = findNode(state.agent_x_position, state.agent_y_position);
+//		//Node temp_node = null;
+//		
+//		if(current_node == null) {
+//			current_node = new Node(Arrays.asList(state.agent_x_position, state.agent_y_position));
+//			nodes.add(current_node);
+//		}
+		
 		for(List<Integer> square: adjacent_squares) {
 			Integer x = square.get(0);
 			Integer y = square.get(1);
@@ -350,13 +359,19 @@ class MyAgentProgram implements AgentProgram {
 			}
 		}
 		
+		
+		
+		
+		
 		Integer next_movement = findNextMovement(goal_square);
 		
+		
 		return determine_next_action(next_movement);
+    	
     }
 	
-    // Find a path to goal and tell me where to go (up, right, down or left?)
 	private Integer findNextMovement(ArrayList<Integer> goal_square) {
+		// Find a path to goal and tell me where to go (up, right, down or left?)
 		// Finding shortest path with help of BFS
 		
 		// Finding the goal node in graph
@@ -368,7 +383,6 @@ class MyAgentProgram implements AgentProgram {
 			}
 		}
 		
-		// Finding the current node in graph
 		Node current_node = null;
 		for(Node node: nodes) {
 			if(node.getX() == state.agent_x_position && node.getY() == state.agent_y_position) {
@@ -378,6 +392,17 @@ class MyAgentProgram implements AgentProgram {
 		}
 		System.out.println("Current is " + current_node);
 		System.out.println("Goal is " + goal_node);
+		System.out.println("Queue " + q);
+		System.out.println("nodes " + nodes);
+		
+//		for(Node n: nodes) {
+//			System.out.println(n);
+//			System.out.println("=================");
+//			for(Node neighbor: n.neighbors) {
+//				System.out.println(neighbor);
+//			}
+//			System.out.println("");
+//		}
 		
 		List<Node> route = new ShortestPath(current_node, goal_node).bfs();
 
@@ -386,6 +411,7 @@ class MyAgentProgram implements AgentProgram {
 			System.out.println("No path found!");
 			return MyAgentState.NORTH;
 		}
+		
 		
 		Node next_node = route.get(1);
 		System.out.println("Next square towards the goal square is >>" + next_node);
@@ -402,6 +428,7 @@ class MyAgentProgram implements AgentProgram {
 		else {
 			return MyAgentState.SOUTH;
 		}
+		
 	}
     
     private Action determine_next_action(Integer next_movement) {

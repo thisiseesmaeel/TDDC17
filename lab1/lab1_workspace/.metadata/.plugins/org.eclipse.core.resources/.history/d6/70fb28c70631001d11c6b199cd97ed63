@@ -378,6 +378,17 @@ class MyAgentProgram implements AgentProgram {
 		}
 		System.out.println("Current is " + current_node);
 		System.out.println("Goal is " + goal_node);
+		System.out.println("Queue " + q);
+		System.out.println("nodes " + nodes);
+		
+//		for(Node n: nodes) {
+//			System.out.println(n);
+//			System.out.println("=================");
+//			for(Node neighbor: n.neighbors) {
+//				System.out.println(neighbor);
+//			}
+//			System.out.println("");
+//		}
 		
 		List<Node> route = new ShortestPath(current_node, goal_node).bfs();
 
@@ -386,6 +397,7 @@ class MyAgentProgram implements AgentProgram {
 			System.out.println("No path found!");
 			return MyAgentState.NORTH;
 		}
+		
 		
 		Node next_node = route.get(1);
 		System.out.println("Next square towards the goal square is >>" + next_node);
@@ -402,6 +414,7 @@ class MyAgentProgram implements AgentProgram {
 		else {
 			return MyAgentState.SOUTH;
 		}
+		
 	}
     
     private Action determine_next_action(Integer next_movement) {
