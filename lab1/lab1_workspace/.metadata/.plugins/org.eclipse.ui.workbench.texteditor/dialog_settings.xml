@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="Queu"/>
+		<item key="selection" value="visited_nodes"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="visited_nodes"/>
+			<item value="q.remo"/>
+			<item value="visit"/>
+			<item value="test"/>
 			<item value="Queu"/>
 			<item value="q.remove()"/>
 			<item value="LIUVacuumEnvironment.ACTION_TURN"/>
@@ -19,10 +23,6 @@
 			<item value="direction is west Should turn left"/>
 			<item value="direction is east should go for"/>
 			<item value="package tddc17;"/>
-			<item value="goal_square"/>
-			<item value="direction is south Should turn left"/>
-			<item value="direction is east"/>
-			<item value="direction"/>
 		</list>
 		<list key="replacehistory">
 		</list>
