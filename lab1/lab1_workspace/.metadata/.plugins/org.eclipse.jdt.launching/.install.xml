@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <dirs>
-    <entry loc="/Users/ismailsafwat/Library/Java/JavaVirtualMachines/corretto-16.0.2/Contents/Home" stamp="1643099685437"/>
-    <entry loc="/Library/Java/JavaVirtualMachines/temurin-11.jdk/Contents/Home" stamp="1626870405000"/>
-    <entry loc="/Library/Java/JavaVirtualMachines/jdk-17.0.2.jdk/Contents/Home" stamp="1644317387880"/>
     <entry loc="/usr/lib/jvm/java-17-openjdk-amd64" stamp="1659685814550"/>
 </dirs>
