@@ -16,12 +16,19 @@ public class CustomGraphSearch implements SearchObject {
 	private NodeQueue frontier;
 	protected ArrayList<SearchNode> path;
 	private boolean insertFront;
+	
+	private ArrayList<GridPos> adjacent_squares = new ArrayList();
 
 	/**
 	 * The constructor tells graph search whether it should insert nodes to front or back of the frontier 
 	 */
     public CustomGraphSearch(boolean bInsertFront) {
 		insertFront = bInsertFront;
+		adjacent_squares.add(new GridPos(1, 0));
+		adjacent_squares.add(new GridPos(-1, 0));
+		adjacent_squares.add(new GridPos(0, 1));
+		adjacent_squares.add(new GridPos(0, -1));
+
     }
 
 	/**
@@ -40,8 +47,12 @@ public class CustomGraphSearch implements SearchObject {
 		// Path will be empty until we find the goal.
 		path = new ArrayList<SearchNode>();
 		
+		// The goal state is given
+		GridPos goalState = (GridPos) p.getGoalState();
+		
 		// Implement this!
 		System.out.println("Implement CustomGraphSearch.java!");
+		System.out.println("goal is " + goalState);
 		
 		
 		/* Some hints:
@@ -68,9 +79,33 @@ public class CustomGraphSearch implements SearchObject {
 		 *  When the goal is found, the path to be returned can be found by: path = node.getPathFromRoot();
 		 */
 		/* Note: Returning an empty path signals that no path exists */
+		
+		// BFS jsut for testing 
+		
+		while(!frontier.isEmpty()) {
+			SearchNode currentNode = frontier.peekAtFront();
+			frontier.removeFirst();
+			explored.add(currentNode);
+			// childStates is basically neighbors of current grid that are not walls
+			ArrayList<GridPos> childStates = p.getReachableStatesFrom(currentNode.getState());
+			
+			for(GridPos state: childStates) {
+				SearchNode childNode = new SearchNode(state);
+				if(!explored.contains(childNode)) {
+					frontier.addNodeToBack(childNode);
+					if(state.equals(goalState)) {
+						System.out.println("Found a path!");
+					}
+					
+				}
+			}
+			
+		}
+		
 		return path;
 	}
 
+		
 	/*
 	 * Functions below are just getters used externally by the program 
 	 */
