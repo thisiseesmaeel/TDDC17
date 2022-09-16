@@ -16,12 +16,19 @@ public class CustomGraphSearch implements SearchObject {
 	private NodeQueue frontier;
 	protected ArrayList<SearchNode> path;
 	private boolean insertFront;
+	
+	private ArrayList<GridPos> adjacent_squares = new ArrayList();
 
 	/**
 	 * The constructor tells graph search whether it should insert nodes to front or back of the frontier 
 	 */
     public CustomGraphSearch(boolean bInsertFront) {
 		insertFront = bInsertFront;
+		adjacent_squares.add(new GridPos(1, 0));
+		adjacent_squares.add(new GridPos(-1, 0));
+		adjacent_squares.add(new GridPos(0, 1));
+		adjacent_squares.add(new GridPos(0, -1));
+
     }
 
 	/**
@@ -80,7 +87,12 @@ public class CustomGraphSearch implements SearchObject {
 			frontier.removeFirst();
 			explored.add(currentNode);
 			if(currentNode.getState().equals(goalState)) {
-				path = currentNode.getPathFromRoot();				
+				path = currentNode.getPathFromRoot();
+				System.out.println("Found a path!");
+				for(SearchNode s: path) {
+					System.out.println(s.getState());
+				}
+				
 				return path;
 			}
 			
@@ -91,13 +103,7 @@ public class CustomGraphSearch implements SearchObject {
 				SearchNode childNode = new SearchNode(state);
 				if(!explored.contains(childNode)) {
 					childNode.setParent(currentNode);
-					
-					if(insertFront) {
-						frontier.addNodeToFront(childNode);
-					}
-					else {
-						frontier.addNodeToBack(childNode);						
-					}
+					frontier.addNodeToBack(childNode);
 					
 					
 				}

@@ -76,11 +76,17 @@ public class CustomGraphSearch implements SearchObject {
 		// BFS just for testing 
 		
 		while(!frontier.isEmpty()) {
+			if()
 			SearchNode currentNode = frontier.peekAtFront();
 			frontier.removeFirst();
 			explored.add(currentNode);
 			if(currentNode.getState().equals(goalState)) {
-				path = currentNode.getPathFromRoot();				
+				path = currentNode.getPathFromRoot();
+				System.out.println("Found a path!");
+				for(SearchNode s: path) {
+					System.out.println(s.getState());
+				}
+				
 				return path;
 			}
 			
@@ -91,13 +97,7 @@ public class CustomGraphSearch implements SearchObject {
 				SearchNode childNode = new SearchNode(state);
 				if(!explored.contains(childNode)) {
 					childNode.setParent(currentNode);
-					
-					if(insertFront) {
-						frontier.addNodeToFront(childNode);
-					}
-					else {
-						frontier.addNodeToBack(childNode);						
-					}
+					frontier.addNodeToBack(childNode);
 					
 					
 				}

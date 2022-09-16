@@ -80,7 +80,12 @@ public class CustomGraphSearch implements SearchObject {
 			frontier.removeFirst();
 			explored.add(currentNode);
 			if(currentNode.getState().equals(goalState)) {
-				path = currentNode.getPathFromRoot();				
+				path = currentNode.getPathFromRoot();
+				System.out.println("Found a path!");
+				for(SearchNode s: path) {
+					System.out.println(s.getState());
+				}
+				
 				return path;
 			}
 			
