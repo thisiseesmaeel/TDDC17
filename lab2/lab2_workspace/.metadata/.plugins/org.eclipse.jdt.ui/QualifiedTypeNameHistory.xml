@@ -3,4 +3,5 @@
     <fullyQualifiedTypeName name="searchShared.NodeQueue"/>
     <fullyQualifiedTypeName name="world.GridPos"/>
     <fullyQualifiedTypeName name="searchShared.SearchNode"/>
+    <fullyQualifiedTypeName name="java.lang.System"/>
 </qualifiedTypeNameHistroy>
