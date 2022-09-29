@@ -24,7 +24,7 @@ public class QLearningController extends Controller {
 	RocketEngine middleEngine;
 	RocketEngine rightEngine;
 
-	final static int NUM_ACTIONS = 5; /* The performAction function must be changed if this is modified */
+	final static int NUM_ACTIONS = 8; /* The performAction function must be changed if this is modified */
 	
 	/* Keep track of the previous state and action */
 	String previous_state = null;
@@ -97,9 +97,9 @@ public class QLearningController extends Controller {
 		 * 3 : Right engine
 		 * 4 : All engines
 		 */
+		resetRockets();
 		
 		switch(action) {
-		
 			case 0:
 				break;
 			case 1:
@@ -114,6 +114,18 @@ public class QLearningController extends Controller {
 			case 4:
 				this.leftEngine.setBursting(true);
 				this.middleEngine.setBursting(true);
+				this.rightEngine.setBursting(true);
+				break;
+			case 5:
+				this.leftEngine.setBursting(true);
+				this.middleEngine.setBursting(true);
+				break;
+			case 6:
+				this.middleEngine.setBursting(true);
+				this.rightEngine.setBursting(true);
+				break;
+			case 7:
+				this.leftEngine.setBursting(true);
 				this.rightEngine.setBursting(true);
 				break;
 		}
@@ -155,6 +167,7 @@ public class QLearningController extends Controller {
 				/* TODO: IMPLEMENT Q-UPDATE HERE! */
 				
 				/* See top for constants and below for helper functions */
+				Qtable.put(prev_stateaction, Qtable.get(prev_stateaction) + alpha(Ntable.get(prev_stateaction)) * (previous_reward + GAMMA_DISCOUNT_FACTOR * getMaxActionQValue(new_state) - Qtable.get(prev_stateaction))); 
 				
 				
 				int action = selectAction(new_state); /* Make sure you understand how it selects an action */

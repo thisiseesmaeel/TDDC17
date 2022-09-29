@@ -8,7 +8,7 @@ public class StateAndReward {
 		
 		//String state = "OneStateToRuleThemAll";
 		
-		String state =  "angle: " + discretize(angle, 10, -5, 5) + "_vx: " + discretize(vx, 10, -5, 5) + "_vy: " + discretize(vy, 10, -5, 5);
+		String state = discretize(angle, 20, -3, 3) +"a" + discretize(vx, 60, -30, 30) + "vx" + discretize(vy, 60, -30, 30) + "vy";
 		
 		
 		return state;
@@ -19,7 +19,7 @@ public class StateAndReward {
 
 		/* TODO: IMPLEMENT THIS FUNCTION */
 		
-		double reward = 0;
+		double reward = Math.abs(3 - Math.abs(angle));
 
 		return reward;
 	}

@@ -41,19 +41,16 @@ public class TutorialController extends Controller {
 
     	/* TODO: Insert your code here */
     	int threshold = -100;
-    	if(this.x.getValue() < threshold) {
-    		System.out.println("Turning of the engines");
-    		this.leftRocket.setBursting(false);
-    		this.rightRocket.setBursting(false);
-    		this.middleRocket.setBursting(false);
-    	}
-    	else {
+
 //    		System.out.println("x position is: " + this.x.getValue());
 //    		System.out.println("y position is: " + this.y.getValue());
-//    		System.out.println("vx is: " + this.vx.getValue());
-//    		System.out.println("vy is: " + this.vy.getValue());    	
-    		System.out.println("angle is: " + this.angle.getValue());   
-    	}
+    	//System.out.println("vx is: " + this.vx.getValue());
+    	//System.out.println("vy is: " + this.vy.getValue());
+    	//System.out.println("angle is: " + this.angle.getValue());   
+
+    	//System.out.println("Reward => " + StateAndReward.getRewardAngle(this.angle.getValue(), this.vx.getValue(), this.y.getValue()));
+    	System.out.println("State => " +  StateAndReward.getStateAngle(this.angle.getValue(), this.vx.getValue(), this.vy.getValue()));
+    	
     	
     }
 
