@@ -29,7 +29,7 @@ public class StateAndReward {
 
 		/* TODO: IMPLEMENT THIS FUNCTION */
 
-		String state = discretize(angle, 20, -3, 3) +"a" + discretize(vx, 10, -15, 15) + "vx" + discretize(vy, 5, -15, 15) + "vy";
+		String state = discretize(angle, 20, -3, 3) +"a" + discretize(vx, 10, -30, 30) + "vx" + discretize(vy, 5, -30, 30) + "vy";
 		
 		return state;
 	}
@@ -39,7 +39,7 @@ public class StateAndReward {
 
 		/* TODO: IMPLEMENT THIS FUNCTION */
 		
-		double reward = Math.abs(3 - Math.abs(angle)) * 10 +  Math.abs(300 - Math.abs(vx) * 10) +  Math.abs(300 - Math.abs(vy) * 10);
+		double reward =  Math.abs(3 - Math.abs(angle)) +  Math.abs(30 - Math.abs(vx)) +  Math.abs(30 - Math.abs(vy));
 
 		return reward;
 	}

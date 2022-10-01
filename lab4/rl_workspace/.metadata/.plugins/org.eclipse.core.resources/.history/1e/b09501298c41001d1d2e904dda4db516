@@ -39,7 +39,7 @@ public class StateAndReward {
 
 		/* TODO: IMPLEMENT THIS FUNCTION */
 		
-		double reward = Math.abs(3 - Math.abs(angle)) * 10 +  Math.abs(300 - Math.abs(vx) * 10) +  Math.abs(300 - Math.abs(vy) * 10);
+		double reward = Math.abs(3 - Math.abs(angle)) +  Math.abs(50 - discretize(vx, 100, -15, 15)) +  Math.abs(50 - discretize(vy, 100, -15, 15));
 
 		return reward;
 	}

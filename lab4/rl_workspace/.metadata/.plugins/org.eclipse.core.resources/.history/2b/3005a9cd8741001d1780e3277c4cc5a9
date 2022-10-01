@@ -49,8 +49,8 @@ public class TutorialController extends Controller {
     	//System.out.println("angle is: " + this.angle.getValue());   
 
     	//System.out.println("Reward => " + StateAndReward.getRewardAngle(this.angle.getValue(), this.vx.getValue(), this.y.getValue()));
-    	System.out.println("State => " +  StateAndReward.getStateHover(this.angle.getValue(), this.vx.getValue(), this.vy.getValue())
-    	+ "     Angle => " + this.angle.getValue() + "     VX => " + this.vx.getValue()  + "     VY => " + this.vy.getValue() +  "    Reward => " + StateAndReward.getRewardHover(this.angle.getValue(), this.vx.getValue(), this.vy.getValue()));
+    	System.out.println("State => " +  StateAndReward.getStateAngle(this.angle.getValue(), this.vx.getValue(), this.vy.getValue())
+    	+ "    Reward => " + StateAndReward.getRewardAngle(this.angle.getValue(), this.vx.getValue(), this.vy.getValue()));
     	
     	
     }
