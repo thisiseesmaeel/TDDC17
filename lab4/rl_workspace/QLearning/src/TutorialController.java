@@ -1,5 +1,10 @@
-public class TutorialController extends Controller {
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
+public class TutorialController extends Controller {
+	
+	DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US); 
     public SpringObject object;
 
     ComposedSpringObject cso;
@@ -49,9 +54,9 @@ public class TutorialController extends Controller {
     	//System.out.println("angle is: " + this.angle.getValue());   
 
     	//System.out.println("Reward => " + StateAndReward.getRewardAngle(this.angle.getValue(), this.vx.getValue(), this.y.getValue()));
-    	System.out.println("State => " +  StateAndReward.getStateHover(this.angle.getValue(), this.vx.getValue(), this.vy.getValue())
-    	+ "     Angle => " + this.angle.getValue() + "     VX => " + this.vx.getValue()  + "     VY => " + this.vy.getValue() +  "    Reward => " + StateAndReward.getRewardHover(this.angle.getValue(), this.vx.getValue(), this.vy.getValue()));
-    	
+    	System.out.println(" SENSORS: a=" +  df.format(this.angle.getValue()) + " vx=" +  df.format(this.vx.getValue()) + 
+				" vy=" +  df.format(this.vy.getValue()) + " P_STATE: " +  StateAndReward.getStateHover(this.angle.getValue(), this.vx.getValue(), this.vy.getValue()) + 
+				" P_REWARD: " +  df.format(StateAndReward.getRewardHover(this.angle.getValue(), this.vx.getValue(), this.vy.getValue())));
     	
     }
 
