@@ -29,7 +29,7 @@ public class StateAndReward {
 
 		/* TODO: IMPLEMENT THIS FUNCTION */
 
-		String state = discretize(angle, 15, -3, 3) +"a" + discretize(vx, 7, -5, 5) + "vx" + discretize(vy, 5, -5, 5) + "vy";
+		String state = discretize(angle, 20, -3, 3) +"a" + discretize(vx, 8, -10, 10) + "vx" + discretize(vy, 4, -10, 10) + "vy";
 		
 		return state;
 	}
@@ -38,8 +38,20 @@ public class StateAndReward {
 	public static double getRewardHover(double angle, double vx, double vy) {
 
 		/* TODO: IMPLEMENT THIS FUNCTION */
+		double vxReward; 
+		double vyReward;
+		double angleReward;
 		
-		double reward = Math.abs(3 - Math.abs(angle)) * 100 + 50 - Math.abs(vx) * 10 + 50 - Math.abs(vy) * 10;
+		
+		vyReward = 5000 / discretize(Math.abs(vy), 50, 0, 15) + 1;
+	
+	
+		vxReward = 500 / discretize(Math.abs(vx), 50, 0, 15) + 1;
+	
+	
+		angleReward = 2000 / discretize(Math.abs(angle), 50, 0, 3) + 1;
+		
+		double reward = angleReward + vxReward + vyReward;
 
 		return reward;
 	}
