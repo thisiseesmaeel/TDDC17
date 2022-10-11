@@ -46,7 +46,7 @@ public class StateAndReward {
 		vyReward = 100 / discretize(Math.abs(vy), 50, 0, 30) + 1;
 	
 	
-		vxReward = 300 / discretize(Math.abs(vx), 50, 0, 30) + 1;
+		vxReward = 400 / discretize(Math.abs(vx), 50, 0, 30) + 1;
 	
 	
 		angleReward = 600 / discretize(Math.abs(angle), 50, 0, 3) + 1;
