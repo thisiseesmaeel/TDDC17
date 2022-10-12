@@ -43,4 +43,9 @@
     (:goal 
         (found s so1 ball)
     )
+    ; Uncomment this to see another goal. Used universal quantifier to define the goal. Goal is to
+    ; move all boxes out from left room 
+    ; (:goal 
+    ;     (forall (?b - box) (not (exist ?b left_room)))
+    ; )
 )

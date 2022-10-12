@@ -56,7 +56,7 @@
     
   )
 
-	:effect (at ?s ?r2)
+	:effect (and(at ?s ?r2)(not (at ?s ?r1)))
    )
 
 
@@ -71,7 +71,7 @@
 			    (or(wide_passage ?wd ?r1 ?r2)(or(wide_passage ?wd ?r2 ?r1)))
         )
 
-	:effect (and (at ?s ?r2) (exist ?b ?r2))
+	:effect (and (at ?s ?r2) (not (at ?s ?r1)) (exist ?b ?r2) (not(exist ?b ?r1)))
  )
 
 
@@ -86,7 +86,7 @@
           (and (at ?s ?r1) (s_exist ?so ?r1) (or(wide_passage ?wd ?r1 ?r2) (wide_passage ?wd ?r2 ?r1)) (found ?s ?so ?lb) (or(free_gripper ?g1) (free_gripper ?g2)))
   )
 
-	:effect (and (at ?s ?r2) (s_exist ?so ?r2))
+	:effect (and (at ?s ?r2) (not (at ?s ?r1)) (s_exist ?so ?r2) (not(s_exist ?so ?r1)))
  )
 
 
